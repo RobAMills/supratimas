@@ -119,11 +119,11 @@ npx gulp  # default task runs watch
 
 ### 3. Serve the Application
 
-The build outputs to the `dist/` directory. Choose a web server option:
+The build outputs to the `dist/web/` directory for the web application. **Important**: You must serve from the `dist/web/` directory, not just `dist/`, for the application to work correctly.
 
-#### Option 1: Python HTTP Server (Cross-platform)
+#### Option 1: Python HTTP Server (Cross-platform) - Recommended
 ```bash
-cd dist
+cd dist/web
 python3 -m http.server 8080
 # For Python 2.x: python -m SimpleHTTPServer 8080
 ```
@@ -133,8 +133,8 @@ python3 -m http.server 8080
 # Install http-server globally
 npm install -g http-server
 
-# Serve from dist directory
-cd dist && http-server -p 8080
+# Serve from dist/web directory
+cd dist/web && http-server -p 8080
 ```
 
 #### Option 3: Local Development Server
@@ -142,15 +142,29 @@ cd dist && http-server -p 8080
 # Install serve locally
 npm install -g serve
 
-# Serve the dist directory
-serve -s dist -l 8080
+# Serve the dist/web directory
+serve -s dist/web -l 8080
+```
+
+#### Option 4: Alternative Python Command (from project root)
+```bash
+# From the project root directory
+python3 -m http.server 8080 --directory dist/web
 ```
 
 ### 4. Access the Application
 
-- **Web app**: `http://localhost:8080/webapp/`
-- **Main site**: `http://localhost:8080/`
-- **Examples**: `http://localhost:8080/examples/`
+Once the server is running from `dist/web/`, you can access:
+
+- **🚀 Main Webapp**: `http://localhost:8080/webapp/` (SQL plan analyzer)
+- **📄 Landing Page**: `http://localhost:8080/`
+- **📁 Example Plans**: `http://localhost:8080/examples/`
+- **📋 Sample Files**:
+  - `http://localhost:8080/examples/example01.sqlplan`
+  - `http://localhost:8080/examples/example02.sqlplan`
+  - `http://localhost:8080/examples/example03.sqlplan`
+
+**Note**: If you see only plain HTML text without styling, verify you're serving from `dist/web/` and not `dist/`.
 
 ## Build Targets
 
@@ -209,7 +223,7 @@ npm install sax
 **Linux/macOS Solution**:
 ```bash
 # Use npx instead of global install
-npx http-server dist -p 8080
+npx http-server dist/web -p 8080
 
 # OR configure npm to use a different directory
 mkdir ~/.npm-global
@@ -217,6 +231,20 @@ npm config set prefix '~/.npm-global'
 echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
+
+#### Issue: Webapp shows only HTML text, no styling or functionality
+**Problem**: Serving from wrong directory - CSS and JavaScript files not loading
+**Solution**: Always serve from `dist/web/` directory, not `dist/`
+```bash
+# Correct way
+cd dist/web
+python3 -m http.server 8080
+
+# NOT from dist/ directory
+# cd dist  # ❌ Wrong - will cause styling/JS issues
+```
+
+**Why this happens**: The webapp HTML expects resources at paths like `/css/main.css` and `/js/app.js`. When serving from `dist/web/`, these resolve correctly to the actual files.
 
 ## Development Workflow
 
