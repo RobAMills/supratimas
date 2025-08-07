@@ -38,7 +38,7 @@ function targetTS(owner) {
                 console.info(_this.files[i]);
                 processTSFile(_this.files[i]);
             }
-            processTS();
+            return processTS();
         });
     };
 
@@ -50,7 +50,7 @@ function targetTS(owner) {
 
         const tn = _this.owner.name + "-ts-watch";
         tasks.push(tn);
-        gulp.task(tn, [dtn], function() {
+        gulp.task(tn, gulp.series(dtn, function() {
 
             var watchPath = _this.path.src + "/**/*.ts";
             log(`watching ${watchPath}...`);
@@ -62,7 +62,7 @@ function targetTS(owner) {
 
                 return processTS();
             });
-        });
+        }));
 
     };
 

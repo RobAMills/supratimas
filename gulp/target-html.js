@@ -35,7 +35,7 @@ function targetHTML(owner) {
         var tn = _this.owner.name + "-html";
         tasks.push(tn);
         gulp.task(tn, function() {
-            processHtml();
+            return processHtml();
         });
 
     };
@@ -48,19 +48,21 @@ function targetHTML(owner) {
 
         const tn = _this.owner.name + "-html-watch";
         tasks.push(tn);
-        gulp.task(tn, [dtn], function() {
+        gulp.task(tn, gulp.series(dtn, function() {
 
             var watchPath = _this.path.src + "/**/*.html";
             log(`watching ${watchPath}...`);
             return watch(watchPath, function() {
                 return processHtml();
             });
-        });
+        }));
 
     };
 
 
     function processHtml() {
+        const merge = require('merge2');
+        const streams = [];
 
         var fileIncludeSettings = {
             prefix: '@@',
@@ -74,12 +76,15 @@ function targetHTML(owner) {
 
             log(`processing ${rootFile} into ${targetFile} ...`);
             log(`exists: ${fs.existsSync(rootFile)}`);
-            gulp.src([rootFile])
+            const stream = gulp.src([rootFile])
                 .pipe(fileinclude(fileIncludeSettings))
                 .pipe(print())
                 //.pipe(htmlmin({ collapseWhitespace: true, minifyJS: true, maxLineLength: 100 }))
                 .pipe(gulp.dest(path.dirname(targetFile)));
+            streams.push(stream);
         }
+
+        return streams.length > 0 ? merge(streams) : Promise.resolve();
     }
 }
 

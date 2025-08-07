@@ -33,17 +33,11 @@ var ssms = new target("ssms")
 //     .build(buildTasks)
 //     .watch(watchTasks);
 
-gulp.task("build", buildTasks, function() {
+gulp.task("build", gulp.series(buildTasks));
 
-});
+gulp.task("watch", gulp.series(watchTasks));
 
-gulp.task("watch", watchTasks, function() {
-
-});
-
-gulp.task("default", ["watch"], function() {
-
-});
+gulp.task("default", gulp.series("watch"));
 
 
 gulp.task("ssmscopy", function() {

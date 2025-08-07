@@ -10,7 +10,8 @@
         "animejs": "^2.2.0",
         "char-encoding-detector": "0.0.7",
         "knockout": "^3.4.2",
-        "requirejs": "^2.3.5"
+        "requirejs": "^2.3.5",
+        "sax": "^1.4.1"
     },
     "devDependencies": {
         "@types/animejs": "^2.0.0",
@@ -21,7 +22,8 @@
         "@types/tape": "^4.2.32",
         "@types/xmldom": "^0.1.29",
         "dir-glob": "^2.0.0",
-        "gulp": "^3.9.1",
+        "graceful-fs": "^4.2.0",
+        "gulp": "^4.0.2",
         "gulp-concat": "^2.6.1",
         "gulp-file-include": "^2.0.1",
         "gulp-htmlmin": "^4.0.0",

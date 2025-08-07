@@ -57,42 +57,51 @@ function targetCSS(owner) {
 
         const tn = _this.owner.name + "-less-watch";
         tasks.push(tn);
-        gulp.task(tn, [dtn], function() {
+        gulp.task(tn, gulp.series(dtn, function() {
             var watchPath = _this.path.src + "/*.less";
             log(`watching ${watchPath}...`);
             return watch(watchPath, function() {
                 return processLess();
             });
-        });
+        }));
 
     };
 
 
 
     function processLess() {
+        const merge = require('merge2');
+        const streams = [];
 
         for (const fileInfo of _this.lessFiles) {
             var rootFile = path.resolve(_this.path.src, fileInfo.rootFile);
             var targetFile = path.resolve(_this.path.dist, fileInfo.fileName);
-            gulp.src(rootFile)
+            const stream = gulp.src(rootFile)
                 .pipe(less())
                 .pipe(uglifycss())
                 .pipe(rename(fileInfo.fileName))
                 .pipe(print())
                 .pipe(gulp.dest(path.dirname(targetFile)));
-
+            streams.push(stream);
         }
 
+        return streams.length > 0 ? merge(streams) : Promise.resolve();
     }
 
     function processResources() {
+        const merge = require('merge2');
+        const streams = [];
+
         for (const item of _this.resources) {
             var src = _this.path.src + "/" + item + "/**/*.*";
-            gulp.src(src)
+            const stream = gulp.src(src)
                 .pipe(newer(_this.path.dist + "/" + item))
                 .pipe(print())
                 .pipe(gulp.dest(_this.path.dist + "/" + item));
+            streams.push(stream);
         }
+
+        return streams.length > 0 ? merge(streams) : Promise.resolve();
     }
 }
 

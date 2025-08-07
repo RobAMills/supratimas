@@ -40,14 +40,20 @@ function targetArtefacts(owner) {
     };
 
     function processResources() {
+        const merge = require('merge2');
+        const streams = [];
+
         for (const item of _this.resources) {
             var src = path.resolve(_this.path.src, item.src);
             var dest = path.resolve(_this.path.dist, item.dest);
-            gulp.src(src)
+            const stream = gulp.src(src)
                 .pipe(newer(dest))
                 .pipe(print())
                 .pipe(gulp.dest(dest));
+            streams.push(stream);
         }
+
+        return streams.length > 0 ? merge(streams) : Promise.resolve();
     }
 }
 
