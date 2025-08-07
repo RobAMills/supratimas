@@ -6,6 +6,9 @@
     "directories": {
         "test": "test"
     },
+    "bin": {
+        "supra-2": "./dist/web/js/app.js"
+    },
     "dependencies": {
         "animejs": "^2.2.0",
         "char-encoding-detector": "0.0.7",
